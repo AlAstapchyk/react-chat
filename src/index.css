@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-image: linear-gradient(to right,
+      rgb(255, 0, 255),
+      rgb(0, 255, 255));
+  color: white;
+}
+
+body {
+  height: 100vh;
+}
