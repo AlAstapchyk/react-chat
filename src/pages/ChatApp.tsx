@@ -15,9 +15,9 @@ const ChatApp = () => {
 
   if (currentUser)
     return (
-      <div className="flex flex-col font-normal h-full">
+      <div className="flex h-full flex-col font-normal">
         <Header />
-        <MessagesView className="flex-grow"/>
+        <MessagesView className="flex-grow" />
         <Footer />
       </div>
     );

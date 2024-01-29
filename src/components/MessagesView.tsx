@@ -54,13 +54,16 @@ const MessagesView: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
   ];
 
   return (
-    <div className={"pb-2 flex flex-col-reverse w-full h-full mask-gradient flex-grow " + props.className}>
+    <div
+      className={
+        "pb-2 flex flex-col-reverse w-full h-full mask-gradient flex-grow " +
+        props.className
+      }
+    >
       <div className="overflow-y-auto">
-        {
-          messages.map((message) => {
-            return <Message message={message} key={message.messageId} />
-          })
-        }
+        {messages.map((message) => {
+          return <Message message={message} key={message.messageId} />;
+        })}
       </div>
     </div>
   );

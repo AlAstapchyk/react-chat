@@ -9,12 +9,15 @@ import { useContext, useEffect } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { z, ZodError } from "zod";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "firebase/app";
 
 const loginFormSchema = z.object({
-  email: z.string().min(1, { message: "Enter the email" }).email({ message: "Invalid email address" }),
+  email: z
+    .string()
+    .min(1, { message: "Enter the email" })
+    .email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Enter the password" }),
 });
 
@@ -23,11 +26,16 @@ type LoginFormFields = z.infer<typeof loginFormSchema>;
 const Login = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
-  const { register, handleSubmit, setError, formState: { errors } } = useForm<LoginFormFields>({ resolver: zodResolver(loginFormSchema) });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginFormFields>({ resolver: zodResolver(loginFormSchema) });
 
   useEffect(() => {
     if (currentUser) navigate("/");
-    console.log(currentUser)
+    console.log(currentUser);
   }, [currentUser]);
 
   const formOnSubmit = async (data: LoginFormFields) => {
@@ -41,8 +49,7 @@ const Login = () => {
           const { path, message } = validationError;
           setError(path[0] as keyof LoginFormFields, { message });
         });
-      }
-      else if (error instanceof FirebaseError)
+      } else if (error instanceof FirebaseError)
         setError("root", {
           message: getAuthErrorStr(error as FirebaseError),
         });
@@ -108,63 +115,62 @@ const Login = () => {
       });
   };
 
-
   if (currentUser === null)
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex relative flex-col bg-white px-8 py-6 shadow-md rounded-md">
+      <div className="flex h-screen items-center justify-center">
+        <div className="relative flex flex-col rounded-md bg-white px-8 py-6 shadow-md">
           <form onSubmit={handleSubmit(formOnSubmit)} className="flex flex-col">
-            <h2 className="text-1xl font-bold mb-4 text-black flex m-auto">
+            <h2 className="text-1xl m-auto mb-4 flex font-bold text-black">
               Login
             </h2>
             {errors.root?.message && (
-              <div className="flex m-auto text-red-500 mb-1 font-medium">
+              <div className="m-auto mb-1 flex font-medium text-red-500">
                 <span>{errors.root.message}</span>
               </div>
             )}
             <div className="mb-4">
               {errors.email?.message && (
-                <div className="flex m-auto text-red-500 mb-1 font-medium">
+                <div className="m-auto mb-1 flex font-medium text-red-500">
                   <span className="text-xs">{errors.email.message}</span>
                 </div>
               )}
               <input
                 {...register("email")}
-                className={`border rounded w-full py-2 px-3 text-gray-700 placeholder-gray-500 ${errors.email?.message ? "border-red-500" : ""}`}
+                className={`w-full rounded border px-3 py-2 text-gray-700 placeholder-gray-500 ${errors.email?.message ? "border-red-500" : ""}`}
                 type="email"
                 placeholder="Email"
               />
             </div>
             <div className="mb-4">
               {errors.password?.message && (
-                <div className="flex m-auto text-red-500 mb-1 font-medium">
+                <div className="m-auto mb-1 flex font-medium text-red-500">
                   <span className="text-xs">{errors.password.message}</span>
                 </div>
               )}
               <input
                 {...register("password")}
-                className={`border rounded w-full py-2 px-3 text-gray-700 placeholder-gray-500 ${errors.email?.message ? "border-red-500" : ""}`}
+                className={`w-full rounded border px-3 py-2 text-gray-700 placeholder-gray-500 ${errors.email?.message ? "border-red-500" : ""}`}
                 type="password"
                 placeholder="Password"
               />
             </div>
             <button
-              className="shadow transition-colors duration-1000 bg-gradient-to-r from-cyan-400 to-pink-400 text-white font-bold py-2 px-4 rounded-md hover:from-cyan-600 hover:to-pink-600 active:from-cyan-700 active:to-pink-700 m-auto"
+              className="m-auto rounded-md bg-gradient-to-r from-cyan-400 to-pink-400 px-4 py-2 font-bold text-white shadow transition-all duration-100 hover:scale-105 hover:from-cyan-600 hover:to-pink-600 active:scale-95 active:from-cyan-700 active:to-pink-700"
               type="submit"
             >
               Login
             </button>
           </form>
 
-          <div className="flex relative mt-4">
-            <hr className="absolute top-1/2 border-t-1 border-solid border-gray-500 w-64"></hr>
-            <p className="z-10 text-gray-500 mx-auto bg-white w-8 text-center">
+          <div className="relative mt-4 flex ">
+            <hr className="border-t-1 absolute top-1/2 w-64 border-solid border-gray-500"></hr>
+            <p className="z-10 mx-auto w-8 bg-white text-center text-gray-500">
               OR
             </p>
           </div>
 
-          <div className="flex flex-row gap-4 mt-3 mx-auto h-8">
-            <button className="rounded-full">
+          <div className="mx-auto mt-3 flex h-8 flex-row gap-4">
+            <button className="rounded-full transition-all duration-100 hover:scale-110  active:scale-95">
               <img
                 onClick={googleOnClick}
                 width={32}
@@ -173,7 +179,7 @@ const Login = () => {
                 alt="Google icon"
               />
             </button>
-            <button className="rounded-full">
+            <button className="rounded-full transition-all duration-100 hover:scale-110 active:scale-95">
               <img
                 onClick={githubOnClick}
                 width={32}
@@ -183,9 +189,9 @@ const Login = () => {
               />
             </button>
           </div>
-          <p className="flex m-auto text-gray-800 mt-3">
+          <p className="m-auto mt-3 flex text-gray-800">
             You don't have an account?
-            <Link to="/register" className="font-medium cursor-pointer ml-1">
+            <Link to="/register" className="ml-1 cursor-pointer font-medium">
               Register
             </Link>
           </p>

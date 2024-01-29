@@ -15,7 +15,7 @@ export const AuthContext = createContext<AuthContextValue>({
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null | undefined>(
-    undefined
+    undefined,
   );
 
   useEffect(() => {
