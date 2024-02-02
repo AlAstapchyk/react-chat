@@ -3,11 +3,14 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import { AuthContextProvider } from "./context/AuthContext.tsx";
+// import { StrictMode } from "react";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
+  // <StrictMode>
   <BrowserRouter>
     <AuthContextProvider>
       <App />
     </AuthContextProvider>
   </BrowserRouter>,
+  // </StrictMode>,
 );

@@ -1,9 +1,7 @@
 import { useRef, useState } from "react";
-import { Send, Smile } from "../svgs";
+import { Send, Smile } from "../../../svgs";
 import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
 import OutsideClickHandler from "react-outside-click-handler";
-
-const HIDDEN = "hidden";
 
 const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
   const [inputValue, setInputValue] = useState<string>("");
@@ -31,13 +29,13 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
   return (
     <>
       <div
-        className="relative flex mb-2 p-2 rounded-2xl h-12 bg-white max-w-full shadow-md"
+        className="relative flex mb-2 mx-1 p-2 rounded-2xl h-12 bg-white max-w-full shadow-md"
         {...props}
       >
         <div
           className={
             "absolute z-50 bottom-[54px] rounded-lg " +
-            (isEmojiPickerOpen ? "" : HIDDEN)
+            (isEmojiPickerOpen ? "" : "hidden")
           }
           ref={emojiPickerRef}
         >
@@ -60,7 +58,7 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
           className="mr-auto relative"
           onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
         >
-          <Smile className="stroke-gray-500 w-8 h-8" />
+          <Smile className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
         </button>
         <input
           className={`mr-2 ml-2 px-2 my-auto text-gray-500 text-lg font-medium truncate flex-grow w-0 border-b-2 rounded-lg`}
@@ -71,7 +69,7 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
           ref={inputRef}
         />
         <button className="ml-auto" onClick={sendMessage}>
-          <Send className="stroke-gray-500 w-8 h-8" />
+          <Send className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
         </button>
       </div>
     </>

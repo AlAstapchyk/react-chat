@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import MessagesView from "../components/MessagesView";
+import { AuthContext } from "../../context/AuthContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import MessagesView from "./components/MessagesView";
 
 const ChatApp = () => {
   const navigate = useNavigate();
@@ -15,9 +15,9 @@ const ChatApp = () => {
 
   if (currentUser)
     return (
-      <div className="flex h-full flex-col font-normal">
+      <div className="flex flex-gorw h-full flex-col font-normal">
         <Header />
-        <MessagesView className="flex-grow" />
+        <MessagesView />
         <Footer />
       </div>
     );

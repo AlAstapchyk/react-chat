@@ -4,10 +4,26 @@
   flex-direction: column;
   @apply max-w-screen-md;
   width: 50rem;
-  padding-inline: 0.5rem;
+  /* padding-inline: 0.5rem; */
   margin-inline: auto;
 }
 
+::-webkit-scrollbar {
+  padding: 0;
+  margin: 0;
+  width: 0.25rem;
+}
+
+::-webkit-scrollbar-thumb {
+  transition: all 0.5s ease-in-out;
+  background-color: transparent;
+  border-radius: 2px;
+}
+
+.white-scrollbar-thumb:hover::-webkit-scrollbar-thumb {
+  background-color: white;
+}
+
 .mask-gradient {
-  mask-image: linear-gradient(to bottom, transparent 0, rgb(0, 0, 0) 5% 99%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, rgb(0, 0, 0) 7% 99%, transparent 100%);
 }
