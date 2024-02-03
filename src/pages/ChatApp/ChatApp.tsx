@@ -1,13 +1,13 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import MessagesView from "./components/MessagesView";
+import Menu from "./Menu/Menu";
+import Chat from "./Chat/Chat";
 
 const ChatApp = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
+  const [isMenu] = useState<boolean>(true);
 
   useEffect(() => {
     if (currentUser === null) navigate("/login");
@@ -15,10 +15,8 @@ const ChatApp = () => {
 
   if (currentUser)
     return (
-      <div className="flex flex-gorw h-full flex-col font-normal">
-        <Header />
-        <MessagesView />
-        <Footer />
+      <div className="flex h-[100dvh] max-w-[100vw] flex-col font-normal">
+        {isMenu ? <Menu /> : <Chat />}
       </div>
     );
 };

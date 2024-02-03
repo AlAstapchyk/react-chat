@@ -1,9 +1,9 @@
-import { Hamburger } from "../../../svgs";
+import { HamburgerSvg } from "../../../../svgs";
 
 const Header = () => {
   return (
     <button className="flex mt-2 mx-1 p-2 rounded-2xl h-12 bg-white max-w-full shadow-md">
-      <Hamburger className="stroke-gray-500 w-8 h-8 ml-1 mr-auto" />
+      <HamburgerSvg className="stroke-gray-500 w-8 h-8 ml-1 mr-auto" />
       <p
         className={`pr-4 pl-2 my-auto text-gray-500 text-lg font-medium truncate flex-grow w-0`}
       >

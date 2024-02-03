@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Send, Smile } from "../../../svgs";
+import { SendSvg, SmileSvg } from "../../../../svgs";
 import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
 import OutsideClickHandler from "react-outside-click-handler";
 
@@ -58,10 +58,10 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
           className="mr-auto relative"
           onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
         >
-          <Smile className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
+          <SmileSvg className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
         </button>
         <input
-          className={`mr-2 ml-2 px-2 my-auto text-gray-500 text-lg font-medium truncate flex-grow w-0 border-b-2 rounded-lg`}
+          className={`mx-2 px-2 my-auto text-gray-500 text-lg font-medium truncate flex-grow w-0 border-b-2 rounded-lg`}
           placeholder="Write a message..."
           value={inputValue}
           onChange={inputOnChange}
@@ -69,7 +69,7 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
           ref={inputRef}
         />
         <button className="ml-auto" onClick={sendMessage}>
-          <Send className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
+          <SendSvg className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
         </button>
       </div>
     </>

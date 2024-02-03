@@ -1,7 +1,7 @@
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import { IMessage } from "./Message";
 import MessageBunch from "./MessageBunch";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../../context/AuthContext";
 import { isSameDay } from "date-fns/isSameDay";
 import { differenceInDays, sub, subDays } from "date-fns";
 import DayLabel from "./DayLabel";
@@ -114,7 +114,7 @@ const MessagesView: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
         props.className
       }
     >
-      <div className="flex flex-col gap-2 pt-4">
+      <div className="flex flex-col gap-2 pt-8">
         {messages[0].sentDate && <DayLabel date={messages[0].sentDate} />}
         {messageBunchs.length !== 0 &&
           messageBunchs.map((messageBunch, i) => {

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { db, getAuthErrorStr } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { firestore, getAuthErrorStr } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import { z, ZodError } from "zod";
@@ -75,12 +75,13 @@ const Register = () => {
     email: string,
     imageUrl: string,
   ) => {
-    await set(ref(db, "users/" + userId), {
-      userId: userId,
+    const docRef = await addDoc(collection(firestore, "users"), {
+      userId,
       displayedName: name,
-      email: email,
-      imageUrl: imageUrl,
+      email,
+      imageUrl,
     });
+    console.log("Document written with ID: ", docRef.id);
   };
 
   const registrateUser = async ({
