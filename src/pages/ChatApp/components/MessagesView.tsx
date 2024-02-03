@@ -1,34 +1,36 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { IMessage } from "./Message";
 import MessageBunch from "./MessageBunch";
 import { AuthContext } from "../../../context/AuthContext";
 import { isSameDay } from "date-fns/isSameDay";
-import { sub } from "date-fns";
+import { differenceInDays, sub, subDays } from "date-fns";
+import DayLabel from "./DayLabel";
+import React from "react";
 
 const messages: IMessage[] = [
   {
-    messageId: 1,
+    messageId: "1",
     type: "text",
     senderId: "user1",
     text: "Hello there!",
-    sentDate: new Date(),
+    sentDate: subDays(new Date(), 2),
   },
   {
-    messageId: 2,
+    messageId: "2",
     type: "text",
     senderId: "user2",
     text: "How are you today?",
-    sentDate: new Date(),
+    sentDate: subDays(new Date(), 2),
   },
   {
-    messageId: 3,
+    messageId: "3",
     type: "text",
     senderId: "user1",
     text: "I'm doing well, thanks for asking.",
     sentDate: new Date(),
   },
   {
-    messageId: 4,
+    messageId: "4",
     type: "text",
     senderId: "user1",
     text: "What are you up to?",
@@ -36,24 +38,31 @@ const messages: IMessage[] = [
     // sentDate: new Date(),
   },
   {
-    messageId: 5,
+    messageId: "5",
     type: "text",
     senderId: "user1",
     text: "Just catching up on some emails.",
-    sentDate: new Date(),
+    sentDate: sub(new Date(), { years: 1 }),
   },
   {
-    messageId: 6,
+    messageId: "6",
     type: "text",
     senderId: "user2",
     text: "Sounds like a productive day.",
     sentDate: new Date(),
   },
   {
-    messageId: 7,
+    messageId: "8",
     type: "text",
     senderId: "user2",
     text: "Yeah, I'm trying to get ahead of the curve.",
+    sentDate: new Date(),
+  },
+  {
+    messageId: "7",
+    type: "text",
+    senderId: "user2",
+    text: "Yeah, I'm trying to get ahead of the curve 2.",
     sentDate: new Date(),
   },
 ];
@@ -89,7 +98,7 @@ const MessagesView: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
     setMessageBunchs(newMessageBunchs);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // sort messages by sentDate
     messages.sort(
       (a, b) => (a.sentDate?.getTime() ?? 0) - (b.sentDate?.getTime() ?? 0),
@@ -101,14 +110,31 @@ const MessagesView: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
   return (
     <div
       className={
-        "pb-2 ml-1 flex flex-col-reverse max-w-full mask-gradient flex-grow overflow-y-auto white-scrollbar-thumb " +
+        "pb-2 ml-1 flex flex-col-reverse max-w-full mask-gradient flex-grow overflow-y-scroll white-scrollbar-thumb " +
         props.className
       }
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 pt-4">
+        {messages[0].sentDate && <DayLabel date={messages[0].sentDate} />}
         {messageBunchs.length !== 0 &&
-          messageBunchs.map((messageBunch) => {
-            return <MessageBunch messages={messageBunch} />;
+          messageBunchs.map((messageBunch, i) => {
+            if (
+              messageBunch.at(-1)?.sentDate !== undefined &&
+              messageBunchs[i + 1]?.at(-1)?.sentDate !== undefined &&
+              differenceInDays(
+                messageBunch.at(-1)?.sentDate as Date,
+                messageBunchs[i + 1].at(-1)?.sentDate as Date,
+              )
+            )
+              return (
+                <React.Fragment key={i}>
+                  <MessageBunch messages={messageBunch} />
+                  <DayLabel
+                    date={messageBunchs[i + 1].at(-1)?.sentDate as Date}
+                  />
+                </React.Fragment>
+              );
+            return <MessageBunch messages={messageBunch} key={i} />;
           })}
       </div>
     </div>

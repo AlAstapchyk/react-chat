@@ -7,7 +7,7 @@ const partnerUserStyles: string =
   "bg-gray-500 border-gray-700 rounded-ss-md rounded-es-md rounded-se-2xl rounded-ee-2xl first:rounded-ss-2xl last:rounded-es-2xl";
 
 export interface IMessage {
-  messageId: number;
+  messageId: string;
   type: "emoji" | "text" | "image" | "document";
   senderId: string;
   text?: string;
