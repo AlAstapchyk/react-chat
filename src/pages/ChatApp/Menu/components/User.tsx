@@ -10,7 +10,7 @@ const Partner = ({ partner, ...props }: PartnerProps) => {
       className="group flex rounded-2xl bg-white p-2 shadow-md hover:cursor-pointer"
       {...props}
     >
-      <img src={partner.photoURL} className="w-12 h-12 rounded-2xl shadow-md" />
+      <img src={partner.photoURL} className="w-12 h-12 rounded-2xl shadow-md" alt="Avatar" />
       <p className="truncate text-lg font-medium my-auto text-left text-gray-500 ml-3 mr-2 flex-grow w-0">
         {partner.displayName}
       </p>

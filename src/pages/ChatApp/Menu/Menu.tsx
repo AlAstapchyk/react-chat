@@ -16,12 +16,14 @@ import { firestore } from "../../../firebase";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Partner from "./components/User";
+import { ChatContext, IChatPartner } from "../../../context/ChatContext";
 
 const Menu = () => {
   const { currentUser } = useContext(AuthContext);
-  const [currentPartner, setCurrentPartner] = useState<DocumentData | null>(
-    null,
-  );
+  const { changePartner } = useContext(ChatContext);
+  // const [currentPartnerDoc, setCurrentPartnerDoc] = useState<DocumentData | null>(
+  //   null,
+  // );
   const [currentUserChats, setCurrentUserChats] = useState<DocumentData>();
   const [searchPartners, setSearchPartners] = useState<Array<any>>();
   const searchValueState = useState<string>("");
@@ -40,9 +42,9 @@ const Menu = () => {
 
     try {
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        setCurrentPartner(doc.data());
-      });
+      // querySnapshot.forEach((doc) => {
+      //   setCurrentPartnerDoc(doc.data());
+      // });
 
       if (querySnapshot.size === 0) {
         console.log("No user is founded with ID:", searchValue);
@@ -60,19 +62,19 @@ const Menu = () => {
     } catch (err) {
       console.log("Error while trying find someone");
     }
-    setIsSearching(false)
+    setIsSearching(false);
   };
 
   const handleSelect = async (partner: any) => {
-    setCurrentPartner(partner);
+    // setCurrentPartnerDoc(partner);
 
-    if (!currentUser || !currentPartner) return;
+    if (!currentUser || !partner) return;
 
     //check whether the group(chats in firestore) exists, if not create
     const combinedId =
-      currentUser.uid > currentPartner.uid
-        ? `${currentUser.uid}_${currentPartner.uid}`
-        : `${currentPartner.uid}_${currentUser.uid}`;
+      currentUser.uid > partner.uid
+        ? `${currentUser.uid}_${partner.uid}`
+        : `${partner.uid}_${currentUser.uid}`;
     try {
       const res = await getDoc(doc(firestore, "chats", combinedId));
 
@@ -80,14 +82,14 @@ const Menu = () => {
         //create user chats
         await updateDoc(doc(firestore, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
-            uid: currentPartner.uid,
-            displayName: currentPartner.displayName,
-            photoURL: currentPartner.photoURL,
+            uid: partner.uid,
+            displayName: partner.displayName,
+            photoURL: partner.photoURL,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
 
-        await updateDoc(doc(firestore, "userChats", currentPartner.uid), {
+        await updateDoc(doc(firestore, "userChats", partner.uid), {
           [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
@@ -99,6 +101,8 @@ const Menu = () => {
         //create a chat in chats collection
         await setDoc(doc(firestore, "chats", combinedId), { messages: [] });
       }
+
+      changePartner && changePartner(partner as IChatPartner);
     } catch (err) {
       console.log(err);
     }
@@ -140,14 +144,14 @@ const Menu = () => {
               <Partner
                 partner={partner}
                 onClick={() => handleSelect(partner)}
-                key={partner.useuidrId}
+                key={partner.uid}
               />
             ))
           ) : currentUserChats && Object.entries(currentUserChats)?.length ? (
             Object.entries(currentUserChats)
               .sort((a, b) => b[1].date - a[1].date)
               .map((chat: any) => (
-                <Partner partner={chat[1].userInfo} key={chat[0]} />
+                <Partner partner={chat[1].userInfo} key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)} />
               ))
           ) : (
             <div className="text-lg">
@@ -156,8 +160,12 @@ const Menu = () => {
           )}
         </div>
       )}
-      {!isLoadingChatsCompleted && <span className="mx-auto mt-4 text-xl">Loading chats...</span>}
-      {isSearching && <span className="mx-auto mt-4 text-xl">Searching chats...</span>}
+      {!isLoadingChatsCompleted && (
+        <span className="mx-auto mt-4 text-xl">Loading chats...</span>
+      )}
+      {isSearching && (
+        <span className="mx-auto mt-4 text-xl">Searching chats...</span>
+      )}
     </div>
   );
 };
