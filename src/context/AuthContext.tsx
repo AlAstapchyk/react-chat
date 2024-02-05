@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, ReactNode } from "react";
-import { auth } from "../firebase";
+import { auth, firestore } from "../firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 interface AuthContextValue {
   currentUser: User | null | undefined;
@@ -19,7 +20,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   );
 
   useEffect(() => {
-    console.log(currentUser);
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       console.log(user);
@@ -29,6 +29,20 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       unsub();
     };
   }, []);
+
+  const checkUserChats = async () => {
+    if (currentUser?.uid) {
+      const userChatsDoc = await getDoc(
+        doc(firestore, "userChats", currentUser.uid),
+      );
+      if (!userChatsDoc.exists())
+        await setDoc(doc(firestore, "userChats", currentUser.uid), {});
+    }
+  };
+
+  useEffect(() => {
+    checkUserChats();
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider value={{ currentUser }}>

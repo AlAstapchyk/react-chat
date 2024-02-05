@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
-import { firestore, getAuthErrorStr } from "../firebase";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import { z, ZodError } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FirebaseError } from "firebase/app";
+import { getAuthErrorStr, writeUserData } from "../firebaseUtils";
 
 const registerFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -20,7 +23,7 @@ const registerFormSchema = z.object({
     .refine((data) => /[^a-zA-Z\d]/.test(data), {
       message: "At least one special character",
     }),
-  displayedName: z
+  displayName: z
     .string()
     .min(1, { message: "Displayed name is required" })
     .max(30, { message: "Max 30 characters" }),
@@ -30,7 +33,7 @@ type RegisterFormFields = z.infer<typeof registerFormSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
-  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [photoURL, setPhotoURL] = useState<string>(""); // Avatar
   const [isAvatarLoading, setIsAvatarLoading] = useState<boolean>();
   const [avatarLoadingErr, setAvatarLoadingErr] = useState<string>("");
   const { currentUser } = useContext(AuthContext);
@@ -52,13 +55,13 @@ const Register = () => {
     const randomId = Math.trunc(Math.random() * 10000);
     const url = `https://robohash.org/${randomId}?size=256x256`;
 
-    setAvatarUrl("");
+    setPhotoURL("");
     setAvatarLoadingErr("");
 
     const img = new Image();
 
     img.onload = () => {
-      setAvatarUrl(url);
+      setPhotoURL(url);
       setIsAvatarLoading(false);
     };
     img.onerror = () => {
@@ -69,25 +72,10 @@ const Register = () => {
     img.src = url;
   };
 
-  const writeUserData = async (
-    userId: string,
-    name: string,
-    email: string,
-    imageUrl: string,
-  ) => {
-    const docRef = await addDoc(collection(firestore, "users"), {
-      userId,
-      displayedName: name,
-      email,
-      imageUrl,
-    });
-    console.log("Document written with ID: ", docRef.id);
-  };
-
   const registrateUser = async ({
     email,
     password,
-    displayedName,
+    displayName,
   }: RegisterFormFields) => {
     try {
       const auth = getAuth();
@@ -98,7 +86,11 @@ const Register = () => {
       );
       const user = userCredential.user;
 
-      await writeUserData(user.uid, displayedName, email, avatarUrl);
+      await updateProfile(user, {
+        displayName: displayName,
+        photoURL: photoURL,
+      });
+      await writeUserData(user.uid, displayName, email, photoURL);
 
       navigate("/");
     } catch (error: any) {
@@ -147,16 +139,14 @@ const Register = () => {
             )}
 
             <div className="mb-4">
-              {errors.displayedName?.message && (
+              {errors.displayName?.message && (
                 <div className="m-auto mb-1 flex font-medium text-red-500">
-                  <span className="text-xs">
-                    {errors.displayedName.message}
-                  </span>
+                  <span className="text-xs">{errors.displayName.message}</span>
                 </div>
               )}
               <input
-                {...register("displayedName")}
-                className={`w-full rounded border px-3 py-2 text-gray-700 placeholder-gray-500 ${errors.displayedName && "border-red-500"}`}
+                {...register("displayName")}
+                className={`w-full rounded border px-3 py-2 text-gray-700 placeholder-gray-500 ${errors.displayName && "border-red-500"}`}
                 type="text"
                 placeholder="Displayed name"
               />
@@ -209,9 +199,9 @@ const Register = () => {
                 {isAvatarLoading === false && avatarLoadingErr === "" && (
                   <img
                     className="h-32 w-32 bg-white transition-all duration-100 hover:scale-105 active:scale-95"
-                    src={avatarUrl}
+                    src={photoURL}
                     alt="Random avatar"
-                    key={avatarUrl}
+                    key={photoURL}
                   />
                 )}
               </button>

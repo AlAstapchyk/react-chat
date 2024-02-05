@@ -1,10 +1,11 @@
 import {
   GithubAuthProvider,
+  User,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, getAuthErrorStr } from "../firebase";
+import { auth, firestore } from "../firebase";
 import { useContext, useEffect } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
@@ -12,6 +13,8 @@ import { z, ZodError } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "firebase/app";
+import { getAuthErrorStr, writeUserData } from "../firebaseUtils";
+import { doc, getDoc } from "firebase/firestore";
 
 const loginFormSchema = z.object({
   email: z
@@ -55,6 +58,13 @@ const Login = () => {
         });
     }
   };
+
+  const writeUserDataWithProvider = (user: User | null) => {
+    if (!user) throw new Error("Current user is undefined or null");
+    getDoc(doc(firestore, "users", user.uid));
+    if (user?.uid && user.displayName && user.email && user.photoURL)
+      writeUserData(user.uid, user.displayName, user.email, user.photoURL);
+  };
   const githubOnClick = () => {
     const provider = new GithubAuthProvider();
     signInWithPopup(auth, provider)
@@ -68,6 +78,10 @@ const Login = () => {
         // const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
         // ...
+
+        const user = auth.currentUser;
+        writeUserDataWithProvider(user);
+
         navigate("/");
       })
       .catch((error) => {
@@ -97,6 +111,9 @@ const Login = () => {
         // const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
         // ...
+        const user = auth.currentUser;
+        writeUserDataWithProvider(user);
+
         navigate("/");
       })
       .catch((error) => {
@@ -108,6 +125,7 @@ const Login = () => {
         // The AuthCredential type that was used.
         // const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
+
         console.log(errorMessage);
         setError("root", {
           message: getAuthErrorStr(error as FirebaseError),
