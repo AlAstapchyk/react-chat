@@ -16,7 +16,7 @@ const Partner = ({ partner, lastMessage, ...props }: PartnerProps) => {
 
   return (
     <button
-      className="group flex rounded-2xl bg-white p-2 shadow-md hover:cursor-pointer"
+      className="group flex last:mb-1 rounded-2xl bg-white p-2 shadow-md hover:cursor-pointer"
       {...props}
     >
       <img

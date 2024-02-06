@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { format } from "date-fns";
 import { AuthContext } from "../../../../context/AuthContext";
 import { Timestamp } from "firebase/firestore";
@@ -21,10 +21,6 @@ const Message = ({ message }: { message: IMessage }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { currentUser } = useContext(AuthContext);
   const isCurrentUser = message.senderId === currentUser?.uid;
-
-  useEffect(() => {
-    setTimeout(() => ref.current?.scrollIntoView({ behavior: "smooth" }), 0);
-  }, []);
 
   if (message.type === "text")
     return (

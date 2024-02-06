@@ -1,4 +1,9 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { IMessage } from "./Message";
 import MessageBunch from "./MessageBunch";
 import { AuthContext } from "../../../../context/AuthContext";
@@ -15,6 +20,7 @@ const MessagesView = ({ messages, ...props }: MessagesViewProps) => {
   const [messageBunchs, setMessageBunchs] = useState<Array<IMessage[]>>([]);
   const { currentUser } = useContext(AuthContext);
   const ref = useRef<HTMLDivElement>(null);
+  const endScrollRef = useRef<HTMLSpanElement>(null);
 
   const distributeMessagesToBunches = () => {
     if (!messages?.length) return;
@@ -53,12 +59,14 @@ const MessagesView = ({ messages, ...props }: MessagesViewProps) => {
       );
 
     distributeMessagesToBunches();
+
+    setTimeout(() => endScrollRef.current?.scrollIntoView({ behavior: "smooth" }), 0)
   }, [currentUser, messages]);
 
   return (
     <div
       className={
-        "pb-2 ml-1 flex flex-col-reverse max-w-full mask-gradient flex-grow overflow-y-scroll white-scrollbar-thumb " +
+        "ml-1 flex flex-col-reverse max-w-full mask-gradient flex-grow white-scrollbar-thumb overflow-y-scroll pr-1 white-scrollbar-thumb " +
         props.className
       }
       ref={ref}
@@ -90,6 +98,7 @@ const MessagesView = ({ messages, ...props }: MessagesViewProps) => {
                 );
               return <MessageBunch messages={messageBunch} key={i} />;
             })}
+          <span className="h-0" ref={endScrollRef}></span>
         </div>
       ) : (
         <div className="m-auto bg-white p-3 rounded-2xl shadow-lg">

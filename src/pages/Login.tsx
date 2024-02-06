@@ -135,7 +135,7 @@ const Login = () => {
 
   if (currentUser === null)
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-full items-center justify-center">
         <div className="relative flex flex-col rounded-md bg-white px-8 py-6 shadow-md">
           <form onSubmit={handleSubmit(formOnSubmit)} className="flex flex-col">
             <h2 className="text-1xl m-auto mb-4 flex font-bold text-black">

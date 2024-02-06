@@ -6,7 +6,7 @@ import ChatApp from "./pages/ChatApp/ChatApp";
 
 function App() {
   return (
-    <div className="h-[100dvh]">
+    <div className="h-full w-full">
       <Routes>
         <Route path="/" element={<ChatApp />} />
         <Route path="/login" element={<Login />} />

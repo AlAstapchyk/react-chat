@@ -20,7 +20,7 @@
   border-radius: 2px;
 }
 
-.white-scrollbar-thumb:hover::-webkit-scrollbar-thumb {
+.white-scrollbar-thumb::-webkit-scrollbar-thumb {
   background-color: white;
 }
 

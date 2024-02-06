@@ -123,6 +123,8 @@ const Menu = () => {
     currentUser.uid && getChats();
   }, [currentUser?.uid]);
 
+  console.log(currentUserChats);
+
   return (
     <div className="flex h-full flex-col font-normal">
       <Header handleSearch={handleSearch} searchValueState={searchValueState} />
@@ -130,7 +132,7 @@ const Menu = () => {
         <h1 className="font-medium text-xl text-white mt-2 ml-3">My chats</h1>
       )}
       {!isSearching && isLoadingChatsCompleted && (
-        <div className="flex-col mt-4 ml-1 overflow-y-scroll gap-2 grid grid-cols-2 max-sm:grid-cols-1">
+        <div className="flex-col mt-4 ml-1 white-scrollbar-thumb overflow-y-scroll pr-1 gap-2 grid grid-cols-2 max-sm:grid-cols-1">
           {searchPartners?.length ? (
             searchPartners.map((partner) => (
               <Partner
@@ -141,7 +143,17 @@ const Menu = () => {
             ))
           ) : currentUserChats && Object.entries(currentUserChats)?.length ? (
             Object.entries(currentUserChats)
-              .sort((a, b) => b[1].date - a[1].date)
+              .sort((a, b) => {
+                if (
+                  a[1]?.lastMessage === undefined &&
+                  b[1]?.lastMessage === undefined
+                )
+                  return 0;
+                if (a[1]?.lastMessage === undefined) return 1;
+                if (b[1]?.lastMessage === undefined) return -1;
+
+                return b[1].date - a[1].date;
+              })
               .map((chat: any) => (
                 <Partner
                   partner={chat[1].userInfo}

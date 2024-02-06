@@ -98,6 +98,7 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
           <SmileSvg className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
         </button>
         <input
+          type="text"
           className={`mx-2 px-2 my-auto text-gray-500 text-lg font-medium truncate flex-grow w-0 border-b-2 rounded-lg`}
           placeholder="Write a message..."
           value={inputValue}

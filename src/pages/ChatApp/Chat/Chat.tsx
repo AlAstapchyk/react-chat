@@ -32,7 +32,7 @@ const ChatApp = () => {
   }, [currentChat?.chatId]);
 
   return (
-    <div className="flex h-[100dvh] flex-col font-normal">
+    <div className="flex h-full flex-col font-normal">
       <Header />
       {isLoading ? (
         <div

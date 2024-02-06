@@ -16,7 +16,7 @@ const ChatApp = () => {
 
   if (currentUser)
     return (
-      <div className="flex h-[100dvh] max-w-[100vw] flex-col font-normal">
+      <div className="flex h-full max-w-[100vw] flex-col font-normal">
         {currentChat ? <Chat /> : <Menu />}
       </div>
     );
