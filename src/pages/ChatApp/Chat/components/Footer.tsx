@@ -1,7 +1,19 @@
-import { useRef, useState } from "react";
-import { SendSvg, SmileSvg } from "../../../../svgs";
+import { useContext, useRef, useState } from "react";
 import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
+import {
+  Timestamp,
+  arrayUnion,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { firestore } from "../../../../firebase";
+import { ChatContext } from "../../../../context/ChatContext";
+import { AuthContext } from "../../../../context/AuthContext";
+import { IMessage } from "./Message";
+import { v4 as uuid } from "uuid";
 import OutsideClickHandler from "react-outside-click-handler";
+import { SendSvg, SmileSvg } from "../../../../svgs";
 
 const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
   const [inputValue, setInputValue] = useState<string>("");
@@ -9,14 +21,12 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
   const smileButtonRef = useRef<HTMLButtonElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState<boolean>(false);
+  const { currentChat } = useContext(ChatContext);
+  const { currentUser } = useContext(AuthContext);
 
-  const sendMessage = () => {
-    console.log("Sent " + inputValue);
-    setInputValue("");
-  };
   const inputOnKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      sendMessage();
+      sendTextMessage();
     }
   };
   const inputOnChange = () => {
@@ -26,10 +36,37 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
     setInputValue((prev) => prev + emojiData.emoji);
   };
 
+  const sendTextMessage = async () => {
+    if (!currentChat || !currentUser || !inputValue) return;
+
+    const newTextMessage: IMessage = {
+      messageId: uuid(),
+      text: inputValue,
+      senderId: currentUser.uid,
+      sentDate: Timestamp.now(),
+      type: "text",
+    };
+    setInputValue("");
+
+    await updateDoc(doc(firestore, "chats", currentChat.chatId), {
+      messages: arrayUnion(newTextMessage),
+    });
+
+    await updateDoc(doc(firestore, "userChats", currentUser.uid), {
+      [currentChat.chatId + ".lastMessage"]: newTextMessage,
+      [currentChat.chatId + ".date"]: serverTimestamp(),
+    });
+
+    await updateDoc(doc(firestore, "userChats", currentChat.partner.uid), {
+      [currentChat.chatId + ".lastMessage"]: newTextMessage,
+      [currentChat.chatId + ".date"]: serverTimestamp(),
+    });
+  };
+
   return (
     <>
       <div
-        className="relative flex mb-2 mx-1 p-2 rounded-2xl h-12 bg-white max-w-full shadow-md"
+        className="relative flex mt-auto mb-2 mx-1 p-2 rounded-2xl h-12 bg-white max-w-full shadow-md"
         {...props}
       >
         <div
@@ -68,7 +105,7 @@ const Footer: React.FC<React.HTMLProps<HTMLDivElement>> = (props) => {
           onKeyDown={inputOnKeyDown}
           ref={inputRef}
         />
-        <button className="ml-auto" onClick={sendMessage}>
+        <button className="ml-auto" onClick={sendTextMessage}>
           <SendSvg className="stroke-gray-500 w-8 h-8 transition-transform duration-100 hover:scale-110 active:scale-95" />
         </button>
       </div>

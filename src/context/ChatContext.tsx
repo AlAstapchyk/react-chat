@@ -1,54 +1,59 @@
-import {
-    ReactNode,
-    createContext,
-    useContext,
-    useState,
-} from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 export interface IChatPartner {
-    uid: string;
-    displayName: string;
-    photoURL: string
+  uid: string;
+  displayName: string;
+  photoURL: string;
 }
 interface IChat {
-    chatId: string,
-    partner: IChatPartner,
+  chatId: string;
+  partner: IChatPartner;
 }
 interface ChatContextValue {
-    currentChat: IChat | undefined;
-    changePartner: ((partner: IChatPartner) => void) | undefined;
+  currentChat: IChat | undefined;
+  setPartner: ((partner: IChatPartner) => void) | undefined;
+  undefyPartner: (() => void) | undefined;
 }
 
-export const ChatContext = createContext<ChatContextValue>({ currentChat: undefined, changePartner: undefined });
+export const ChatContext = createContext<ChatContextValue>({
+  currentChat: undefined,
+  setPartner: undefined,
+  undefyPartner: undefined,
+});
 
 interface ChatContextProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
-    const { currentUser } = useContext(AuthContext);
-    const [chat, setChat] = useState<IChat>();
+  const { currentUser } = useContext(AuthContext);
+  const [chat, setChat] = useState<IChat>();
 
-    const changePartner = (partner: IChatPartner) => {
-        console.log("Current user is: ", currentUser)
-        console.log("Current partner is: ", partner)
-        if (!currentUser || !partner.uid) {
-            console.log("!currentUser || !partner?.uid - Error");
-            return;
-        }
-        const newChat: IChat = {
-            partner: partner,
-            chatId:
-                currentUser.uid > partner.uid
-                    ? currentUser.uid + partner.uid
-                    : partner.uid + currentUser.uid,
-        };
-        setChat(newChat);
+  const setPartner = (partner: IChatPartner) => {
+    console.log("Current user is: ", currentUser);
+    console.log("Current partner is: ", partner);
+    if (!currentUser || !partner.uid) {
+      console.log("!currentUser || !partner?.uid - Error");
+      return;
     }
+    const newChat: IChat = {
+      partner: partner,
+      chatId:
+        currentUser.uid > partner.uid
+          ? `${currentUser.uid}_${partner.uid}`
+          : `${partner.uid}_${currentUser.uid}`,
+    };
+    setChat(newChat);
+  };
+  const undefyPartner = () => {
+    setChat(undefined);
+  };
 
-    return (
-        <ChatContext.Provider value={{ currentChat: chat, changePartner }}>
-            {children}
-        </ChatContext.Provider>
-    );
+  return (
+    <ChatContext.Provider
+      value={{ currentChat: chat, setPartner, undefyPartner }}
+    >
+      {children}
+    </ChatContext.Provider>
+  );
 };

@@ -69,7 +69,7 @@ const Header = ({ handleSearch, searchValueState }: HeaderProps) => {
             setIsDropDownProfileMenuOpen(false)
           }
         >
-          <div className="flex gap-1 absolute -bottom-[2.5rem] p-1 rounded-md bg-white shadow-md text-gray-600 font-medium">
+          <div className=" z-40 flex gap-1 absolute -bottom-[2.5rem] p-1 rounded-md bg-white shadow-md text-gray-600 font-medium">
             <button
               className="px-1 rounded-md hover:bg-gray-200"
               onClick={LogOut}

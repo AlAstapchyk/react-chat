@@ -20,10 +20,7 @@ import { ChatContext, IChatPartner } from "../../../context/ChatContext";
 
 const Menu = () => {
   const { currentUser } = useContext(AuthContext);
-  const { changePartner } = useContext(ChatContext);
-  // const [currentPartnerDoc, setCurrentPartnerDoc] = useState<DocumentData | null>(
-  //   null,
-  // );
+  const { setPartner } = useContext(ChatContext);
   const [currentUserChats, setCurrentUserChats] = useState<DocumentData>();
   const [searchPartners, setSearchPartners] = useState<Array<any>>();
   const searchValueState = useState<string>("");
@@ -42,13 +39,10 @@ const Menu = () => {
 
     try {
       const querySnapshot = await getDocs(q);
-      // querySnapshot.forEach((doc) => {
-      //   setCurrentPartnerDoc(doc.data());
-      // });
 
       if (querySnapshot.size === 0) {
         console.log("No user is founded with ID:", searchValue);
-        return; // Indicate that no such user exists
+        return;
       }
 
       const partnersData = querySnapshot.docs
@@ -66,8 +60,6 @@ const Menu = () => {
   };
 
   const handleSelect = async (partner: any) => {
-    // setCurrentPartnerDoc(partner);
-
     if (!currentUser || !partner) return;
 
     //check whether the group(chats in firestore) exists, if not create
@@ -102,7 +94,7 @@ const Menu = () => {
         await setDoc(doc(firestore, "chats", combinedId), { messages: [] });
       }
 
-      changePartner && changePartner(partner as IChatPartner);
+      setPartner && setPartner(partner as IChatPartner);
     } catch (err) {
       console.log(err);
     }
@@ -151,7 +143,12 @@ const Menu = () => {
             Object.entries(currentUserChats)
               .sort((a, b) => b[1].date - a[1].date)
               .map((chat: any) => (
-                <Partner partner={chat[1].userInfo} key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)} />
+                <Partner
+                  partner={chat[1].userInfo}
+                  lastMessage={chat[1]?.lastMessage}
+                  key={chat[0]}
+                  onClick={() => handleSelect(chat[1].userInfo)}
+                />
               ))
           ) : (
             <div className="text-lg">

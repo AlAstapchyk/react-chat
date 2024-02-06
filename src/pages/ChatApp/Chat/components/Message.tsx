@@ -1,5 +1,7 @@
-import { useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { format } from "date-fns";
+import { AuthContext } from "../../../../context/AuthContext";
+import { Timestamp } from "firebase/firestore";
 
 const currentUserStyles: string =
   "ml-auto text-gray-700 bg-white border-gray-700 rounded-se-md rounded-ee-md rounded-ss-2xl rounded-es-2xl first:rounded-se-2xl last:rounded-ee-2xl";
@@ -12,17 +14,17 @@ export interface IMessage {
   senderId: string;
   text?: string;
   url?: string;
-  sentDate?: Date;
+  sentDate?: Timestamp;
 }
 
-const Message = ({
-  message,
-  isCurrentUser,
-}: {
-  message: IMessage;
-  isCurrentUser: boolean;
-}) => {
+const Message = ({ message }: { message: IMessage }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const { currentUser } = useContext(AuthContext);
+  const isCurrentUser = message.senderId === currentUser?.uid;
+
+  useEffect(() => {
+    setTimeout(() => ref.current?.scrollIntoView({ behavior: "smooth" }), 0);
+  }, []);
 
   if (message.type === "text")
     return (
@@ -36,7 +38,7 @@ const Message = ({
             <span
               className={`${isCurrentUser ? "text-gray-500" : "text-gray-200"} text-xs ml-auto flex`}
             >
-              {format(message.sentDate, "hh:mm a")}
+              {format(message.sentDate.toDate(), "hh:mm a")}
             </span>
           )}
         </div>
