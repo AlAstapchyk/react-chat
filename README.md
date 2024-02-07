@@ -1,30 +1,31 @@
-# React + TypeScript + Vite
+# React Chat
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <a href="https://react-chat-aa.netlify.app">
+    <img src="https://github.com/AlAstapchyk/react-chat/assets/104316850/84250b1b-9a3d-48a4-a260-a05834b60cec" alt="Icon" height="120">
+  </a>
+</p>
 
-Currently, two official plugins are available:
+Chat PWA based on [React.js](https://react.dev/), powered by [Vite](https://vitejs.dev/); [Firebase](https://firebase.google.com/) for authentication and data storage. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The application is available at the link address: https://react-chat-aa.netlify.app
 
-## Expanding the ESLint configuration
+Since it is PWA, application can be installed on any device using browser that supports this technology.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Also you can launch locally or deploy app with your configuration.
 
-- Configure the top-level `parserOptions` property like this:
+### Custom Firebase configuration
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+1. Create project on [Firebase](https://firebase.google.com/)
+2. Enable Authentication with Email, Google and GitHub
+3. Enable Firestore
+4. Clone repository and go to it
+5. Rename .env.example file to .env and insert the appropriate values from the Firebase project configuration
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Local launch
+
+After configuration you can launch app locally using the following command:
+
+```bash
+npm run dev
+
