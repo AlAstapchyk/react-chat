@@ -40,19 +40,14 @@ const Header = ({ handleSearch, searchValueState }: HeaderProps) => {
 
       // Check if the document exists:
       if (querySnapshot.size === 0) {
-        console.log("No user found with ID:", uid);
         return; // Indicate that no such user exists
       }
 
       // Process the retrieved document data:
-      const userData = querySnapshot.docs[0].data();
-      console.log("Retrieved user data:", userData); // Or use the data as needed
+      // const userData = querySnapshot.docs[0].data();
 
       // Handle potential errors gracefully:
-    } catch (error) {
-      console.error("Error reading user data:", error);
-      // Provide an appropriate error message or take corrective actions
-    }
+    } catch {}
   };
 
   const LogOut = () => {
@@ -89,9 +84,10 @@ const Header = ({ handleSearch, searchValueState }: HeaderProps) => {
     <div className="relative flex mt-2 mx-1 p-2 rounded-2xl h-12 bg-white max-w-full shadow-md">
       <DropDownProfileMenu />
 
+
       <button
         className="transition-transform duration-100 hover:scale-110 active:scale-95"
-        onClick={() => setIsDropDownProfileMenuOpen(!isDropDownProfileMenuOpen)}
+        onClick={() => { handleSearch(""); setIsDropDownProfileMenuOpen(!isDropDownProfileMenuOpen) }}
         ref={profileButtonRef}
       >
         <img

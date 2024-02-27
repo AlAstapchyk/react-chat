@@ -33,5 +33,5 @@ export const writeUserData = async (
     email,
     photoURL,
   });
-  console.log("Document written with ID: ", docRef.id);
+  // console.log("Document written with ID: ", docRef.id);
 };

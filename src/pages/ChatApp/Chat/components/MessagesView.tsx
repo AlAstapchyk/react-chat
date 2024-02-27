@@ -1,14 +1,8 @@
-import {
-  useContext,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { IMessage } from "./Message";
 import MessageBunch from "./MessageBunch";
 import { AuthContext } from "../../../../context/AuthContext";
 import { isSameDay } from "date-fns/isSameDay";
-import { differenceInDays } from "date-fns";
 import DayLabel from "./DayLabel";
 import React from "react";
 
@@ -60,7 +54,10 @@ const MessagesView = ({ messages, ...props }: MessagesViewProps) => {
 
     distributeMessagesToBunches();
 
-    setTimeout(() => endScrollRef.current?.scrollIntoView({ behavior: "smooth" }), 0)
+    setTimeout(
+      () => endScrollRef.current?.scrollIntoView({ behavior: "smooth" }),
+      0,
+    );
   }, [currentUser, messages]);
 
   return (
@@ -81,7 +78,7 @@ const MessagesView = ({ messages, ...props }: MessagesViewProps) => {
               if (
                 messageBunch.at(-1)?.sentDate !== undefined &&
                 messageBunchs[i + 1]?.at(-1)?.sentDate !== undefined &&
-                differenceInDays(
+                !isSameDay(
                   messageBunch.at(-1)?.sentDate?.toDate() as Date,
                   messageBunchs[i + 1].at(-1)?.sentDate?.toDate() as Date,
                 )

@@ -41,7 +41,6 @@ const Menu = () => {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.size === 0) {
-        console.log("No user is founded with ID:", searchValue);
         return;
       }
 
@@ -50,12 +49,9 @@ const Menu = () => {
         .filter((partner) =>
           partner.displayName.toLowerCase().includes(searchValue.toLowerCase()),
         );
-      console.log("Retrieved founded user data:", partnersData);
 
       setSearchPartners(partnersData);
-    } catch (err) {
-      console.log("Error while trying find someone");
-    }
+    } catch {}
     setIsSearching(false);
   };
 
@@ -95,9 +91,7 @@ const Menu = () => {
       }
 
       setPartner && setPartner(partner as IChatPartner);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch {}
   };
 
   useEffect(() => {
@@ -110,9 +104,9 @@ const Menu = () => {
           setCurrentUserChats(doc.data());
           setIsLoadingChatsCompleted(true);
         },
-        (e) => {
-          console.log(e);
-        },
+        // (e) => {
+        //   console.log(e);
+        // },
       );
 
       return () => {
@@ -123,7 +117,6 @@ const Menu = () => {
     currentUser.uid && getChats();
   }, [currentUser?.uid]);
 
-  console.log(currentUserChats);
 
   return (
     <div className="flex h-full flex-col font-normal">

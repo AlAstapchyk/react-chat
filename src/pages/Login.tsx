@@ -38,7 +38,6 @@ const Login = () => {
 
   useEffect(() => {
     if (currentUser) navigate("/");
-    console.log(currentUser);
   }, [currentUser]);
 
   const formOnSubmit = async (data: LoginFormFields) => {
@@ -88,7 +87,7 @@ const Login = () => {
         // Handle Errors here.
         // const errorCode = error.code;
         const errorMessage = error.message;
-        // The email of the user's account used.
+        // The email of the user's account used
         // const email = error.customData.email;
         // The AuthCredential type that was used.
         // const credential = GithubAuthProvider.credentialFromError(error);

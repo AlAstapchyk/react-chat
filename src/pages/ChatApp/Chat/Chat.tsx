@@ -19,8 +19,6 @@ const ChatApp = () => {
       doc(firestore, "chats", currentChat.chatId),
       (doc) => {
         setIsLoading(true);
-        console.log("chat Id: ", currentChat.chatId);
-        console.log("Messages: ", doc.data());
         doc.exists() && setMessages(doc.data().messages);
         setIsLoading(false);
       },

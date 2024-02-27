@@ -30,10 +30,7 @@ export const ChatContextProvider = ({ children }: ChatContextProviderProps) => {
   const [chat, setChat] = useState<IChat>();
 
   const setPartner = (partner: IChatPartner) => {
-    console.log("Current user is: ", currentUser);
-    console.log("Current partner is: ", partner);
     if (!currentUser || !partner.uid) {
-      console.log("!currentUser || !partner?.uid - Error");
       return;
     }
     const newChat: IChat = {
